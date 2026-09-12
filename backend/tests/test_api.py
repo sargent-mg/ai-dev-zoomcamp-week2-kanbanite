@@ -2,6 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from backend.app import app
+from backend.store import database
 
 client = TestClient(app)
 
@@ -45,6 +46,22 @@ def test_get_card_returns_existing_card():
     data = response.json()
     assert data['id'] == 'card-1'
     assert data['title'] == 'Plan onboarding sequence'
+
+
+def test_get_missing_card_returns_404():
+    response = client.get('/cards/not-a-real-card')
+
+    assert response.status_code == 404
+    assert response.json()['detail'] == 'Card not found'
+
+
+def test_store_reset_returns_seed_board():
+    database.create_card('todo', 'Out-of-band card', 'Temporary card')
+
+    board = database.reset()
+
+    assert [column['id'] for column in board['columns']] == ['todo', 'progress', 'done']
+    assert [len(column['cards']) for column in board['columns']] == [2, 1, 1]
 
 
 def test_update_card_rewrites_title_and_description():

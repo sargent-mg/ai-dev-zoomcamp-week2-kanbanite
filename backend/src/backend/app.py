@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from .mock_store import database
+from .store import database
 
 app = FastAPI(title='Kanbanite API', version='1.0.0')
 
