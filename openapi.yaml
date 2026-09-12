@@ -14,6 +14,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Board'
+    patch:
+      summary: Reset the mock board store
+      operationId: resetBoard
+      responses:
+        '200':
+          description: Board reset successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Board'
     post:
       summary: Create a new card in a column
       operationId: createCard
@@ -81,6 +91,29 @@ paths:
       responses:
         '204':
           description: Card deleted successfully
+  /cards/{card_id}/move:
+    patch:
+      summary: Move a card to a column and position
+      operationId: moveCard
+      parameters:
+        - in: path
+          name: card_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveCardRequest'
+      responses:
+        '200':
+          description: Card moved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Board'
 components:
   schemas:
     Card:
@@ -141,6 +174,16 @@ components:
           type: string
       required:
         - title
+    MoveCardRequest:
+      type: object
+      properties:
+        column_id:
+          type: string
+        position:
+          type: integer
+      required:
+        - column_id
+        - position
     Error:
       type: object
       properties:

@@ -72,6 +72,34 @@ class MockKanbanStore:
                     return True
         return False
 
+    def move_card(self, card_id, column_id, position):
+        card = None
+        source_column = None
+        source_index = -1
+
+        for column in self.board['columns']:
+            for index, item in enumerate(column['cards']):
+                if item['id'] == card_id:
+                    card = item
+                    source_column = column
+                    source_index = index
+                    break
+            if source_column:
+                break
+
+        if card is None:
+            return None
+
+        target_column = next((item for item in self.board['columns'] if item['id'] == column_id), None)
+        if target_column is None:
+            return None
+
+        source_column['cards'].pop(source_index)
+        safe_position = max(0, min(position, len(target_column['cards'])))
+        target_column['cards'].insert(safe_position, card)
+
+        return deepcopy(self.board)
+
     def reset(self):
         self.__init__()
         return deepcopy(self.board)

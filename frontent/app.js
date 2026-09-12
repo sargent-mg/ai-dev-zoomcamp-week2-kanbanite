@@ -10,10 +10,19 @@ const cancelModalButton = document.getElementById('cancel-modal');
 const deleteCardButton = document.getElementById('delete-card');
 const resetBoardButton = document.getElementById('reset-board');
 
-let currentBoard = KanbaniteApi.getBoard();
+let currentBoard = { columns: [] };
 let currentCardId = null;
 let currentColumnId = null;
 let draggedCardId = null;
+
+async function loadBoard() {
+  try {
+    currentBoard = await KanbaniteApi.getBoard();
+    renderBoard();
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 function createColumnMarkup(column) {
   const cards = column.cards.map(createCardMarkup).join('');
@@ -115,7 +124,7 @@ function findCardColumn(cardId) {
   return null;
 }
 
-function saveCard(event) {
+async function saveCard(event) {
   event.preventDefault();
 
   const title = cardTitleInput.value.trim();
@@ -126,25 +135,34 @@ function saveCard(event) {
     return;
   }
 
-  if (currentCardId) {
-    currentBoard = KanbaniteApi.updateCard(currentCardId, title, description);
-  } else {
-    currentBoard = KanbaniteApi.createCard(currentColumnId, title, description);
-  }
+  try {
+    if (currentCardId) {
+      currentBoard = await KanbaniteApi.updateCard(currentCardId, title, description);
+    } else {
+      currentBoard = await KanbaniteApi.createCard(currentColumnId, title, description);
+    }
 
-  renderBoard();
-  closeModal();
+    renderBoard();
+    closeModal();
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-function deleteCardById(cardId) {
+async function deleteCardById(cardId) {
   const card = findCard(cardId);
   if (!card) {
     return;
   }
 
-  currentBoard = KanbaniteApi.deleteCard(cardId);
-  renderBoard();
-  closeModal();
+  try {
+    await KanbaniteApi.deleteCard(cardId);
+    currentBoard = await KanbaniteApi.getBoard();
+    renderBoard();
+    closeModal();
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 board.addEventListener('click', (event) => {
@@ -209,7 +227,7 @@ board.addEventListener('dragover', (event) => {
   }
 });
 
-board.addEventListener('drop', (event) => {
+board.addEventListener('drop', async (event) => {
   const list = event.target.closest('[data-column-list]');
   if (!list) {
     return;
@@ -243,9 +261,13 @@ board.addEventListener('drop', (event) => {
     }
   }
 
-  currentBoard = KanbaniteApi.moveCard(cardId, targetColumnId, targetIndex);
+  try {
+    currentBoard = await KanbaniteApi.moveCard(cardId, targetColumnId, targetIndex);
+    renderBoard();
+  } catch (error) {
+    console.error(error);
+  }
 
-  renderBoard();
   clearDropMarkers();
   draggedCardId = null;
 });
@@ -260,9 +282,13 @@ deleteCardButton.addEventListener('click', () => {
   }
 });
 
-resetBoardButton.addEventListener('click', () => {
-  currentBoard = KanbaniteApi.reset();
-  renderBoard();
+resetBoardButton.addEventListener('click', async () => {
+  try {
+    currentBoard = await KanbaniteApi.reset();
+    renderBoard();
+  } catch (error) {
+    console.error(error);
+  }
 });
 
 function getDragAfterElement(list, y, cards) {
@@ -298,4 +324,4 @@ function escapeHtml(value) {
     .replace(/'/g, '&#039;');
 }
 
-renderBoard();
+loadBoard();
