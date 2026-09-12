@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kanbanite</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand-wrap">
+        <div class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" class="icon-svg">
+            <path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" fill="currentColor" opacity=".95" />
+          </svg>
+        </div>
+        <div>
+          <span class="brand-kicker">KANBANITE</span>
+          <h1>Project Board</h1>
+        </div>
+      </div>
+      <button class="ghost-button" id="reset-board">
+        <span aria-hidden="true">↺</span>
+        Reset demo
+      </button>
+    </header>
+
+    <main class="kanban-wrapper">
+      <section class="kanban-board" id="kanban-board" aria-label="Kanban board"></section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="card-modal">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <span class="modal-kicker" id="modal-kicker">Card</span>
+          <h2 id="modal-title">Create card</h2>
+        </div>
+        <button class="icon-button close-button" id="close-modal" aria-label="Close modal">×</button>
+      </div>
+
+      <form id="card-form">
+        <div class="field-group">
+          <label for="card-title">Title</label>
+          <input type="text" id="card-title" required minlength="1" placeholder="Card title" autocomplete="off" />
+        </div>
+
+        <div class="field-group">
+          <label for="card-description">Description</label>
+          <textarea id="card-description" placeholder="Short description" rows="4"></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <div class="left-actions">
+            <button class="delete-button hidden" id="delete-card" type="button">Delete card</button>
+          </div>
+          <div class="right-actions">
+            <button class="secondary-button" id="cancel-modal" type="button">Cancel</button>
+            <button class="primary-button" type="submit">Save card</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="api.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
