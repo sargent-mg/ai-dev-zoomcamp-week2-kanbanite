@@ -1,0 +1,40 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Python virtual environments and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+
+# Coverage and test artifacts
+.coverage
+.coverage.*
+htmlcov/
+
+# Editor and IDE folders
+.vscode/
+.idea/
+
+# Local environment and secret files
+.env
+.env.*
+!.env.example
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*~
+
+# Windows and generic OS artifacts
+Thumbs.db
