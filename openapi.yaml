@@ -1,0 +1,148 @@
+openapi: 3.0.3
+info:
+  title: Kanbanite API
+  version: 1.0.0
+paths:
+  /board:
+    get:
+      summary: Get the current Kanban board
+      operationId: getBoard
+      responses:
+        '200':
+          description: Board retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Board'
+    post:
+      summary: Create a new card in a column
+      operationId: createCard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCardRequest'
+      responses:
+        '201':
+          description: Card created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Board'
+  /cards/{card_id}:
+    get:
+      summary: Get a single card
+      operationId: getCard
+      parameters:
+        - in: path
+          name: card_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Card retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+    put:
+      summary: Update a card
+      operationId: updateCard
+      parameters:
+        - in: path
+          name: card_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCardRequest'
+      responses:
+        '200':
+          description: Card updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Board'
+    delete:
+      summary: Delete a card
+      operationId: deleteCard
+      parameters:
+        - in: path
+          name: card_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Card deleted successfully
+components:
+  schemas:
+    Card:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+      required:
+        - id
+        - title
+        - description
+    Column:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        cards:
+          type: array
+          items:
+            $ref: '#/components/schemas/Card'
+      required:
+        - id
+        - title
+        - cards
+    Board:
+      type: object
+      properties:
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/Column'
+      required:
+        - columns
+    CreateCardRequest:
+      type: object
+      properties:
+        column_id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+      required:
+        - column_id
+        - title
+    UpdateCardRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+      required:
+        - title
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
